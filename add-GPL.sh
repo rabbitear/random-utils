@@ -1,5 +1,5 @@
 #!/bin/bash
-# Adds GPL2 banner to top of any file.
+# Adds GPL3 banner to top of any file.
 
 OUTFILE="${1}"
 
