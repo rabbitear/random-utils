@@ -1,0 +1,102 @@
+#!/usr/bin/perl -w
+# perl-tk script by (c) Jon Bradley
+# =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+#   script takes whatever is on the clipboard and looks it up.
+#   supposively you have local dictionarys installed, so you
+#   do not have to be online, but then can google, wikipedia, etc.
+#   the clipboard.
+
+# ideas for this script:
+# =-=-=-=-=-=-=-=-=-=-=
+# - download the youtube vids IF I am on 'breadbox' but other wise open browser.
+# - should work in an xmonad key-binding.
+# - have 'festival' tell you what its doing, maybe in a different voice?
+
+# this script uses these software packages:
+# =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+# - festival
+# - stardict cli version
+# - notify-send from libnotify
+# - chromium for the browser
+# - xclip to grab from the clip board.
+
+
+use Tk;
+use strict;
+require Tk::ROText;
+
+my $clipboard = `xclip -o`;
+
+# Loads the url into chromium with a message.
+# ARGS: message, url
+sub loadurl {
+    system "notify-send", $_[0];
+    system "echo $_[0] | festival --tts &";
+    system "chromium", $_[1], "&";
+}
+
+sub locallookup {
+    my $dict1 = `sdcv --non-interactive --use-dict "WordNet" $clipboard`;
+    my $dict2 = `sdcv --non-interactive --use-dict "Webster's Revised Unabridged Dictionary (1913)" $clipboard`; 
+    my $dict3 = `sdcv --non-interactive --use-dict "Moby Thesaurus II" $clipboard`;
+    my $lookuptext = "$dict1=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n$dict2=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n$dict3=-=-= EOF =-=-=";
+
+    my $win = new MainWindow();
+    $win->title( 'Clipboard-lookup' );
+    $win->Label(-text => "Clipboard Lookup ($clipboard)")->pack;
+    # here we draw a text box.
+    my $txt = $win -> Scrolled('ROText', -width=>80, -scrollbars=>"oe")
+        -> pack();
+    my $button1 = $win -> Button(-text=>"Quit",
+        -command => sub { exit }) -> pack(-side=>'right');
+    my $button2 = $win -> Button(-text=>"Google",
+        -command => sub { &google; }) -> pack(-side=>'right');
+    my $button2 = $win -> Button(-text=>"Wikipedia",
+        -command => sub { &wikipedia; }) -> pack(-side=>'right');
+    $txt -> insert('end', $lookuptext);
+    MainLoop;
+}
+
+sub google {
+    # if ( `netcfg status` =~ /(\w+|[^(library)]|[^(tuxracer)])/i ) {
+    # ^ means computer is connected to a network.
+    # should be blank if not connected.
+    #http://www.google.com/search?hl=en&q=WHATEVER
+
+    my $msg = "Googleing: $clipboard";
+    my $url = "http://www.google.com/search?q=define:$clipboard";
+    &loadurl($msg,$url);
+} 
+
+sub wikipedia {
+    # fixme: need to add a searchreplace regex, to replace (/s+)
+    # with underscores (_)
+    my $msg = "Wikipedia: $clipboard";
+    my $url = "http://en.wikipedia.org/wiki/$clipboard";
+    &loadurl($msg,$url);
+}
+
+# If the site is a youtube video.
+# we can polish up this regex for the youtube vidoe soon.
+if ( $clipboard =~ /http:\/\/(www\.)?youtube.com\// ) {
+    if ( `netcfg status` =~ /tuxracer/i ) {
+        my $msg = "Sending youtube video to web brower.";
+        &loadurl($msg,$clipboard);
+    }
+} elsif ( $clipboard =~ /https?\:\/\/(\w+).*/ ) {
+    if ( `netcfg status` =~ /\w+/ ) {
+        my $msg = "Loading website $1.";
+        &loadurl($msg,$clipboard);
+    }
+} else {
+    ##########
+    # ktr - ###################################
+    # THE LOOK UP A WORD.                     #
+    ###########################################
+    my $msg = "Local Lookup of the word: $clipboard"; 
+    system "notify-send", $msg;
+    system "echo $msg | festival --tts &";
+    &locallookup;
+}
+
+##EOF##

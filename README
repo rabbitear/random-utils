@@ -2,5 +2,6 @@ rabbitear's Quick Dirty Utilities
 ~~~~~~~~~ ~ ~~~~~ ~~~~~ ~~~~~~~~~
 (completely random stuff)
 
-add_GPL.sh	- adds the GPL2 banner on the top of a any file.
+add_GPL.sh	        - adds the GPL2 banner on the top of a any file.
+clipboard-lookup    - lookup dictionary or docs from the clipboard.
 
