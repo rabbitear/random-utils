@@ -26,13 +26,14 @@ use strict;
 require Tk::ROText;
 
 my $clipboard = `xclip -o`;
+$clipboard =~ s/^(\s)+//;
 
 # Loads the url into chromium with a message.
 # ARGS: message, url
 sub loadurl {
     system "notify-send", $_[0];
     system "echo $_[0] | festival --tts &";
-    system "chromium", $_[1], "&";
+    system "chromium", "$_[1] &";
 }
 
 sub locallookup {
@@ -53,6 +54,12 @@ sub locallookup {
         -command => sub { &google; }) -> pack(-side=>'right');
     my $button2 = $win -> Button(-text=>"Wikipedia",
         -command => sub { &wikipedia; }) -> pack(-side=>'right');
+    my $button3 = $win -> Button(-text=>"Urban",
+        -command => sub { &urban; }) -> pack(-side=>'right');
+    my $button4 = $win -> Button(-text=>"Repeat",
+        -command => sub { &sayagain; }) -> pack(-side=>'right');
+    my $button5 = $win -> Button(-text=>"Blogs",
+        -command => sub { &blogs; }) -> pack(-side=>'right');
     $txt -> insert('end', $lookuptext);
     MainLoop;
 }
@@ -62,18 +69,44 @@ sub google {
     # ^ means computer is connected to a network.
     # should be blank if not connected.
     #http://www.google.com/search?hl=en&q=WHATEVER
-
+    #http://www.google.com/search?q=define:$clipboard";
+    my $clip = $clipboard;
+    $clip =~ s/(\s)+/\%20/;
     my $msg = "Googleing: $clipboard";
-    my $url = "http://www.google.com/search?q=define:$clipboard";
+    my $url = "http://www.google.com/search?hl=en&q=$clip";
     &loadurl($msg,$url);
 } 
 
-sub wikipedia {
-    # fixme: need to add a searchreplace regex, to replace (/s+)
-    # with underscores (_)
-    my $msg = "Wikipedia: $clipboard";
-    my $url = "http://en.wikipedia.org/wiki/$clipboard";
+sub blogs {
+    # uses + for spaces.
+    # http://www.google.com/search?hl=en&ie=UTF-8&q=WHATEVER&tbm=blg
+    my $clip = $clipboard;
+    $clip =~ s/(\s)+/\+/;
+    my $msg = "Blog searching: $clipboard";
+    my $url = "http://www.google.com/search?hl=en&ie=UTF-8&q=${clip}&tbm=blg";
     &loadurl($msg,$url);
+}
+
+sub wikipedia {
+    my $clip = $clipboard;
+    $clip =~ s/(\s)+/_/g;
+    my $url = "http://en.wikipedia.org/wiki/$clipboard";
+    my $msg = "Searching Wikipedia for $clipboard";
+    my $url = "http://en.wikipedia.org/wiki/Special:Search/$clip";
+    &loadurl($msg,$url);
+}
+
+
+sub urban {
+    my $clip = $clipboard;
+    $clip =~ s/(\s)+/\+/g;
+    my $msg = "Looking up $clipboard in urban dictionary.";
+    my $url = "http://www.urbandictionary.com/define.php?term=$clip";
+    &loadurl($msg,$url);
+}
+
+sub sayagain {
+    system "echo $clipboard | festival --tts &";
 }
 
 # If the site is a youtube video.
@@ -93,9 +126,8 @@ if ( $clipboard =~ /http:\/\/(www\.)?youtube.com\// ) {
     # ktr - ###################################
     # THE LOOK UP A WORD.                     #
     ###########################################
-    my $msg = "Local Lookup of the word: $clipboard"; 
-    system "notify-send", $msg;
-    system "echo $msg | festival --tts &";
+    system "notify-send", "Defining: $clipboard";
+    system "echo $clipboard | festival --tts &";
     &locallookup;
 }
 
