@@ -1,0 +1,62 @@
+#!/bin/bash
+# Script to send 'torrents' to breadbox, also handles
+# m3u and pls playlists, which get sent to mpd on breadbox.
+
+# TODO:
+# - Convert this to PERL
+# - fixme: the m3u doesn't play for some reason.
+
+echo "$1" >> ~/chrom-opens.txt
+
+FILENAME=$(basename "$1")
+
+# ktr - added this to try and send torrents to breadbox
+if [[ $(xdg-mime query filetype "$1") =~ "torrent" ]]
+then
+	if [[ $(netcfg status) =~ 'tuxracer' ]]
+	then
+		notify-send "Sending -breadbox- a Torrent: \"$FILENAME\""
+		scp "$1" storage@breadbox:~/watch 
+		[ $? == 0 ] && notify-send "SUCCESS: $FILENAME" || \
+		notify-send "FAIL: $FILENAME"
+		rm "$1"
+	else
+		notify-send "Sending -breadbox.ath.cx- a Torrent: \"$FILENAME\""
+		scp "$1" storage@breadbox.ath.cx:~/watch
+		[ $? == 0 ] && notify-send "SUCCESS: $FILENAME" || \
+		notify-send "FAIL: $FILENAME"
+		rm "$1"
+	fi
+	exit
+fi
+
+
+if [[ "$1" == *.pls ]]
+then
+	notify-send "Adding $FILENAME to mpd-pls playlist"
+
+	test $# -ne 1 && notify-send "$0 takes 1 argument" && exit 1
+	test ! -e "$1" && notify-send "Argument ($1) needs to be a file" && exit 2
+	sed -ne 's/^File[0-9]*=//p' "$1" | mpc --host breadbox add
+
+	[ $? == 0 ] && notify-send "SUCCESS on: $FILENAME" || \
+		notify-send "FAIL on: $FILENAME"
+	rm "$1"
+	exit 0
+fi
+
+if [[ "$1" == *.m3u ]]
+then
+	notify-send "Adding $1 to mpd-m3u playlist."
+
+	test $# -ne 1 && notify-send "$0 takes 1 argument" && exit 1
+	test ! -e "$1" && notify-send "Argument ($1) needs to be a file" && exit 2
+	mpc --host breadbox add < "$1"
+
+	[ $? == 0 ] && notify-send "SUCCESS on: $FILENAME" || \
+		notify-send "FAIL on: $FILENAME"
+	exit 0
+fi
+
+
+### EOF ###
