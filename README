@@ -8,4 +8,5 @@ backup_helpfiles.sh - backups up my help file directory from laptop to server
 Breadbox-downloader - script to send torrents to breadbox, also handles 
                       .m3u and .pls audio streams to the mpd server
 batt-script-nocolor.bash - for dwm, displays the time and battery life on taskbar.
+rotate-screen.sh    - rotates the screen to the left, or back to normal.
 
