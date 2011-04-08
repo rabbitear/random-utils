@@ -4,4 +4,7 @@ rabbitear's Quick Dirty Utilities
 
 add_GPL.sh	        - adds the GPL2 banner on the top of a any file.
 clipboard-lookup    - lookup dictionary or docs from the clipboard.
+backup_helpfiles.sh - backups up my help file directory from laptop to server
+Breadbox-downloader - script to send torrents to breadbox, also handles 
+                      .m3u and .pls audio streams to the mpd server
 
