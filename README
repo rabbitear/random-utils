@@ -9,4 +9,6 @@ Breadbox-downloader - script to send torrents to breadbox, also handles
                       .m3u and .pls audio streams to the mpd server
 batt-script-nocolor.bash - for dwm, displays the time and battery life on taskbar.
 rotate-screen.sh    - rotates the screen to the left, or back to normal.
+surf-google.sh      - lookup clipboard on google, or view youtube with mplayer.
+book-scan.c         - scan isbn number, look up on googlebooks, make a list.
 
