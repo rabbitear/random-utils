@@ -11,4 +11,5 @@ batt-script-nocolor.bash - for dwm, displays the time and battery life on taskba
 rotate-screen.sh    - rotates the screen to the left, or back to normal.
 surf-google.sh      - lookup clipboard on google, or view youtube with mplayer.
 book-scan.c         - scan isbn number, look up on googlebooks, make a list.
+youtube-grabber.pl  - small irssi script to grab and youtube-dl vids from irc.
 
