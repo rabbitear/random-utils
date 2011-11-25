@@ -41,18 +41,22 @@ sub url_private {
 sub find_url {
    my $text = shift;
    if($text =~ /((https|http):\/\/www\.youtube\.com\/watch\?v=[a-zA-Z0-9\/\\\:\?\%\.\&\;=#\-\_\!\+\~]*)/i) {
+	   Irssi::print("Youtube URL match!");
 	  return $1;
+   } elsif($text =~ /((https|http):\/\/www\.metacafe\.com\/watch\/[a-zA-Z0-9\/\\\:\?\%\.\&\;=#\-\_\!\+\~]*)/i) {
+	   Irssi::print("Metacafe URL match!");
+	   return $1;
    }
    return undef;
 }
 
-sub download_yt {
+sub download_vid {
    my($url) = @_;
    Irssi::print("Trying to start the youtube-ld on: $url\n");
-   
+    
    # use youtube-dl to get the video
    # add '--format 5' if you want low-res videos for a slow connection.
-   system("$ytldpath --continue --no-progress --rate-limit $rate --write-description --quiet --write-info-json --output \"$destdir/%(stitle)s-%(upload_date)s.%(ext)s\" \"$url\" >&/dev/null &");
+   system("$ytldpath --continue --no-progress --format 43 --rate-limit $rate --quiet --write-info-json --output \"$destdir/%(stitle)s-%(upload_date)s.%(ext)s\" \"$url\" >&/dev/null &");
 
    return;
 }
@@ -65,7 +69,7 @@ sub url_log {
    $url =~ s/&.*$//;
    $lasturl = $url;
 
-   download_yt($url);
+   download_vid($url);
 
    Irssi::print("Recording youtube url to logfile.\n");
    open(URLLOG, ">>$file") or return;
