@@ -56,7 +56,10 @@ sub download_vid {
     
    # use youtube-dl to get the video
    # add '--format 5' if you want low-res videos for a slow connection.
-   system("$ytldpath --continue --no-progress --format 43 --rate-limit $rate --quiet --write-info-json --output \"$destdir/%(stitle)s-%(upload_date)s.%(ext)s\" \"$url\" >&/dev/null &");
+   # --format 43 is the best one, mostly! *.webm, but boxee doesn't play
+   # it, bad boxee! bad boxee! temparary changing it back to 5..
+   # until can man up for boxee or have them man up.
+   system("$ytldpath --continue --no-progress --format 5 --rate-limit $rate --quiet --write-info-json --output \"$destdir/%(stitle)s-%(upload_date)s.%(ext)s\" \"$url\" >&/dev/null &");
 
    return;
 }
