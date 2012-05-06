@@ -1,0 +1,31 @@
+#!/bin/bash
+# xbattbar-check-bash-acpi
+# by Jon Bradley (weatchu AT gmail)
+# 
+# What it is:
+# ~~~~~~~~~~~
+# Script that makes xbattbar work on newer acpi linux machines.
+#
+# Depends
+# ~~~~~~~
+# xbattbar-acpi - low profile battery monitor for X and acpi.
+# http://mirrors.kernel.org/ubuntu/pool/universe/x/xbattbar-acpi
+#
+# Example Usage:
+# xbattbar -c -s /path/to/xbattbar-check-bash-acpi -a right
+#           |  |                                    |   |
+# Use acpi _/  /                                    /   /
+# Chk Script__/                                    /   /
+# Stay on Top_____________________________________/   /
+# Location on screen (bottom, top, left, right)______/
+#
+
+ACPI=$(acpi -a 100)
+BATTERY=$(echo $ACPI | grep --extended-regexp --only-matching '[0-9]+%')
+[[ ${ACPI} =~ "AC Power" ]] && AC="on" || AC="off"
+
+echo "battery=${BATTERY}"
+echo "ac_line=${AC}"
+
+#eof#
+
