@@ -14,6 +14,9 @@ $VERSION = "0.2";
 # scripts directory.  You will need the newest version of youtube-dl
 # located at: http://rg3.github.com/youtube-dl/
 
+# TODO:
+#  - Fix up the regex, to grab all vids that youtube-dl can download.
+
 use strict;
 my $lasturl;
 

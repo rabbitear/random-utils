@@ -3,6 +3,9 @@
 # from a list of youtube links and use youtube-dl
 # to download them.
 
+use warnings;
+use strict;
+
 use File::Temp;
 use File::Copy;
 
@@ -18,7 +21,7 @@ if(`pgrep -f youtube-dl`) {
 }
 
 # Limit the bandwidth to say 10k or 5m for example.
-my $rate = "20k";
+my $rate = "50k";
 # The path to youtube-dl
 my $ytldpath = "/usr/local/bin/youtube-dl";
 if(! -e $ytldpath) {
@@ -30,9 +33,8 @@ if(! -e $ytldpath) {
 my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) =
      localtime(time);
 my @abbr = qw( Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec );
-#print "$abbr[$mon]$mday\n";
 $year += 1900;
-my $destdir = "/mnt/nas/Media/Videos/IRC-Vids-$addr[$mon]-$year";
+my $destdir = "/mnt/nas/Media/Videos/IRC-Vids-$abbr[$mon]$year";
 # create the destdir if not existing.
 if(! -e $destdir) {
 	mkdir $destdir,0755;
