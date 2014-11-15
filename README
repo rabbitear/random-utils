@@ -13,4 +13,5 @@ surf-google.sh      - lookup clipboard on google, or view youtube with mplayer.
 book-scan.c         - scan isbn number, look up on googlebooks, make a list.
 youtube-grabber.pl  - small irssi script to grab and youtube-dl vids from irc.
 gtk-lookup.pl       - lookup dictionary words with 'sdcv' gtk frontend.
+url-launcher.py     - a youtube downloader, and url launcher GUI in python.
 
