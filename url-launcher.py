@@ -20,6 +20,7 @@ from PIL import ImageTk, Image
 from StringIO import StringIO
 import os
 import Tkinter as tk
+import tkMessageBox
 
 soundfile = "/home/kreator/.i3/pop.wav"
 downloadpath = "/home/kreator/Desktop/Youtube/Youtube-url-grabber"
@@ -55,7 +56,15 @@ def runBrowser():
     print("Opening in browser...")
     sh.chromium(url)
 
+# the callback function for creating new video obj.
+def videoInfoStats(stuff):
+    print(stuff)
+    # this is commented beause the Label is not created yet.
+    #progressvar.set("{0}".format(stuff))
+    #root.update_idletasks()
 
+
+# the callback function for downloading stats progress.
 def dlStats(total, recvd, ratio, rate, eta):
     #print(recvd, ratio, rate, eta)
     progressvar.set("{0:,} bytes RX\n{1:.2f}k/sec\neta: {2:.2f}s".format(recvd, rate, eta))
@@ -65,6 +74,8 @@ def dlStats(total, recvd, ratio, rate, eta):
 def downloadVideo(v):
     if(os.path.exists(downloadpath) == False):
         sh.mkdir('-p',downloadpath)
+        progressvar.set("creating direcotr {0}".format(downloadpath))
+        root.update_idletasks()
 
     dlfilename = "{0}/{1}.{2}".format(downloadpath, v.title, v.extension)
     if(os.path.exists(dlfilename)):
@@ -72,7 +83,10 @@ def downloadVideo(v):
         progressvar.set("File already exists:\nyt: {0:,} bytes\nlo: {1:,} bytes".format(v.get_filesize(),statinfo.st_size))
         root.update_idletasks()
     else:
-        v.download(filepath=dlfilename, quiet=True, callback=dlStats)
+        try:
+            v.download(filepath=dlfilename, quiet=True, callback=dlStats)
+        except IOError, e:
+            tkMessageBox.showwarning("url-launcher","IOError: {0}".format(e))
 
 
 def hiresDownload():
@@ -123,7 +137,6 @@ def runYoutubeDownloader():
     global progressvar
     global root
 
-    video = pafy.new(url.split('&')[0])
     root = tk.Tk()
     root.wm_title("url-launcher")
     tf = tk.Frame(root)
@@ -134,6 +147,9 @@ def runYoutubeDownloader():
     textbox = tk.Text(tf, width=40, height=10, state='normal')
     textbox.grid(row=0, column=1, rowspan=2)
     print("ok.. text box should be there")
+
+    video = pafy.new(url.split('&')[0], callback=videoInfoStats)
+
     textbox.insert('end',"{0}\n".format(video.title))
     textbox.insert('end'," ======================================\n")
     textbox.insert('end',"   Author: {0}\n".format(video.author))
@@ -147,7 +163,8 @@ def runYoutubeDownloader():
         elif(s.extension == "3gp"):
             lores = s
         else:
-            print("Error getting stream information from youtube")
+            print("skipping {0} format.".format(s.extension))
+            #tkMessageBox.showwarning("url-launcher","Skipping {0} format.".format(s.extension))
 
     textbox.insert('end',"hires [{1}]: {0:,} bytes\n".format(hires.get_filesize(), hires.resolution))
     textbox.insert('end',"lores [{1}]: {0:,} bytes\n".format(lores.get_filesize(), lores.resolution))
