@@ -77,7 +77,7 @@ def downloadVideo(v):
         progressvar.set("creating direcotr {0}".format(downloadpath))
         root.update_idletasks()
 
-    dlfilename = "{0}/{1}.{2}".format(downloadpath, v.title.replace('/','_'), v.extension)
+    dlfilename = "{0}/{1}.{2}".format(downloadpath, v.title.replace('/','_').encode("ascii","ignore"), v.extension)
     if(os.path.exists(dlfilename)):
         statinfo = os.stat(dlfilename)
         progressvar.set("File already exists:\nyt: {0:,} bytes\nlo: {1:,} bytes".format(v.get_filesize(),statinfo.st_size))
@@ -103,8 +103,8 @@ def playVideo():
         progressvar.set("Creating Directory:\n{0}".format(downloadpath))
         root.update_idletasks()
 
-    hidlpath = "{0}/{1}.{2}".format(downloadpath, hires.title.replace('/','_'), hires.extension)
-    lodlpath = "{0}/{1}.{2}".format(downloadpath, lores.title.replace('/','_'), lores.extension)
+    hidlpath = "{0}/{1}.{2}".format(downloadpath, hires.title.replace('/','_').encode("ascii","ignore"), hires.extension)
+    lodlpath = "{0}/{1}.{2}".format(downloadpath, lores.title.replace('/','_').encode("ascii","ignore"), lores.extension)
 
     if(os.path.exists(hidlpath)):
         # play the hires video with mplayer
@@ -150,7 +150,7 @@ def runYoutubeDownloader():
 
     video = pafy.new(url.split('&')[0], callback=videoInfoStats)
 
-    textbox.insert('end',"{0}\n".format(video.title))
+    textbox.insert('end',"{0}\n".format(video.title.encode("ascii","ignore")))
     textbox.insert('end'," ======================================\n")
     textbox.insert('end',"   Author: {0}\n".format(video.author))
     textbox.insert('end',"Published: {0}\n".format(video.published))
