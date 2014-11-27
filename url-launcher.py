@@ -5,10 +5,18 @@
 # deps: (requests, pafy) easy to add them with pip.
 
 # Todo:
-# - check to see if the file has alreayd been downloaded.
-# - play the video with mplayer etc.
-# - fix the wavfile sound, probably in a try/accept block
+# - check to see if the file has alreayd been downloaded. *done*
+# - play the video with mplayer etc. *done*
+# - fix the wavfile sound, probably in a try/accept block *done*
 # - stop using external commands 'qiv' and 'play'.
+
+# I use it in .Xdefaults with urxvt's .url-launcher, so urxvt
+# displays the link in any text on the screen that starts with
+# http then if you click on that in urxvt, it runs whatever..
+# .Xdefaults line looks like this:
+# URxvt.url-launcher:     /home/kreator/bin/url-launcher.py
+# sure you could make up more creative ways to use the script.
+# Enjoy.
 
 import pafy
 import sys
