@@ -18,9 +18,12 @@ title = entries[0]['title']
 published = entries[0]['published']
 filename = mp3_url.split('/')[-1]
 
-print("Title: " + title)
-print("Published: " + published)
-print("Mp3 link: " + mp3_url)
+print("=====================================")
+print("==  sans daily threatwire podcast  ==")
+print("=====================================")
+print("Title: [" + title + "]")
+print("Published: [" + published + "]")
+print("Mp3 link: [" + mp3_url + "]")
 print("Fetching file, please wait..")
 
 # grab the mp3 file.
@@ -29,10 +32,15 @@ r = http.request('GET', mp3_url)
 filesize = str(len(r.data))
 
 # save it to disk.
-print("filename: " + filename + ", size: " + filesize)
+print("Filename: [" + filename +\
+        "], Size: [" +\
+        filesize +\
+        "] bytes.")
 f = open(filename,'wb')
 f.write(r.data)
 f.close()
-print("==enjoy==")
+print("=============")
+print("==  enjoy  ==")
+print("=============")
 
 #eof#
